@@ -1,6 +1,6 @@
 {
 	"name": "@nkt/n8n-nodes-sumsub",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "n8n community node for Sumsub identity verification API",
 	"keywords": [
 		"n8n-community-node-package",
