@@ -165,13 +165,37 @@ export class Sumsub implements INodeType {
 
 				if (resource === 'applicant') {
 					if (operation === 'create') {
-						responseData = await createApplicant(this, i, apiUrl, appToken, appSecret);
+						responseData = await createApplicant({
+							executeFunctions: this,
+							itemIndex: i,
+							apiUrl,
+							appToken,
+							appSecret,
+						});
 					} else if (operation === 'get') {
-						responseData = await getApplicant(this, i, apiUrl, appToken, appSecret);
+						responseData = await getApplicant({
+							executeFunctions: this,
+							itemIndex: i,
+							apiUrl,
+							appToken,
+							appSecret,
+						});
 					} else if (operation === 'getStatus') {
-						responseData = await getApplicantStatus(this, i, apiUrl, appToken, appSecret);
+						responseData = await getApplicantStatus({
+							executeFunctions: this,
+							itemIndex: i,
+							apiUrl,
+							appToken,
+							appSecret,
+						});
 					} else if (operation === 'update') {
-						responseData = await updateApplicant(this, i, apiUrl, appToken, appSecret);
+						responseData = await updateApplicant({
+							executeFunctions: this,
+							itemIndex: i,
+							apiUrl,
+							appToken,
+							appSecret,
+						});
 					} else {
 						throw new NodeOperationError(
 							this.getNode(),
@@ -208,32 +232,43 @@ export class Sumsub implements INodeType {
 	}
 }
 
-function createSignature(
-	method: string,
-	url: string,
-	timestamp: number,
-	body: string,
-	appSecret: string,
-): string {
-	const message = timestamp + method.toUpperCase() + url + body;
+function createSignature({
+	method,
+	path,
+	timestamp,
+	body,
+	appSecret,
+}: {
+	method: string;
+	path: string;
+	timestamp: number;
+	body: string;
+	appSecret: string;
+}): string {
+	const message = timestamp + method.toUpperCase() + path + body;
 	return createHmac('sha256', appSecret).update(message).digest('hex');
 }
 
-async function makeRequest(
-	executeFunctions: IExecuteFunctions,
-	method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE',
-	url: string,
-	appToken: string,
-	appSecret: string,
-	body?: IDataObject,
-): Promise<SumsubApiResponse> {
+interface MakeRequestParams {
+	executeFunctions: IExecuteFunctions;
+	method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+	path: string;
+	apiUrl: string;
+	appToken: string;
+	appSecret: string;
+	body?: IDataObject;
+}
+
+async function makeRequest(params: MakeRequestParams): Promise<SumsubApiResponse> {
+	const { executeFunctions, method, path, apiUrl, appToken, appSecret, body } = params;
 	const timestamp = Math.floor(Date.now() / 1000);
 	const bodyString = body ? JSON.stringify(body) : '';
-	const signature = createSignature(method, url, timestamp, bodyString, appSecret);
+	const signature = createSignature({ method, path, timestamp, body: bodyString, appSecret });
 
 	const options: IHttpRequestOptions = {
 		method,
-		url,
+		url: path,
+		baseURL: apiUrl,
 		headers: {
 			'X-App-Token': appToken,
 			'X-App-Access-Sig': signature,
@@ -250,13 +285,16 @@ async function makeRequest(
 	return await executeFunctions.helpers.request(options);
 }
 
-async function createApplicant(
-	executeFunctions: IExecuteFunctions,
-	itemIndex: number,
-	apiUrl: string,
-	appToken: string,
-	appSecret: string,
-): Promise<ApplicantData> {
+interface ApplicantOperationParams {
+	executeFunctions: IExecuteFunctions;
+	itemIndex: number;
+	apiUrl: string;
+	appToken: string;
+	appSecret: string;
+}
+
+async function createApplicant(params: ApplicantOperationParams): Promise<ApplicantData> {
+	const { executeFunctions, itemIndex, ...requestParams } = params;
 	const externalUserId = executeFunctions.getNodeParameter('externalUserId', itemIndex) as string;
 	const levelName = executeFunctions.getNodeParameter('levelName', itemIndex) as string;
 	const additionalFields = executeFunctions.getNodeParameter(
@@ -276,48 +314,42 @@ async function createApplicant(
 	if (additionalFields.firstName) body.firstName = additionalFields.firstName;
 	if (additionalFields.lastName) body.lastName = additionalFields.lastName;
 
-	const url = `${apiUrl}/resources/applicants?levelName=${encodeURIComponent(levelName)}`;
-	return (await makeRequest(
+	const path = `/resources/applicants?levelName=${encodeURIComponent(levelName)}`;
+	return (await makeRequest({
 		executeFunctions,
-		'POST',
-		url,
-		appToken,
-		appSecret,
+		method: 'POST',
+		path,
 		body,
-	)) as ApplicantData;
+		...requestParams,
+	})) as ApplicantData;
 }
 
-async function getApplicant(
-	executeFunctions: IExecuteFunctions,
-	itemIndex: number,
-	apiUrl: string,
-	appToken: string,
-	appSecret: string,
-): Promise<ApplicantData> {
+async function getApplicant(params: ApplicantOperationParams): Promise<ApplicantData> {
+	const { executeFunctions, itemIndex, ...requestParams } = params;
 	const applicantId = executeFunctions.getNodeParameter('applicantId', itemIndex) as string;
-	const url = `${apiUrl}/resources/applicants/${applicantId}/one`;
-	return (await makeRequest(executeFunctions, 'GET', url, appToken, appSecret)) as ApplicantData;
+	const path = `/resources/applicants/${applicantId}/one`;
+	return (await makeRequest({
+		executeFunctions,
+		method: 'GET',
+		path,
+		...requestParams,
+	})) as ApplicantData;
 }
 
-async function getApplicantStatus(
-	executeFunctions: IExecuteFunctions,
-	itemIndex: number,
-	apiUrl: string,
-	appToken: string,
-	appSecret: string,
-): Promise<ApplicantReview> {
+async function getApplicantStatus(params: ApplicantOperationParams): Promise<ApplicantReview> {
+	const { executeFunctions, itemIndex, ...requestParams } = params;
 	const applicantId = executeFunctions.getNodeParameter('applicantId', itemIndex) as string;
-	const url = `${apiUrl}/resources/applicants/${applicantId}/status`;
-	return (await makeRequest(executeFunctions, 'GET', url, appToken, appSecret)) as ApplicantReview;
+	const path = `/resources/applicants/${applicantId}/status`;
+	return (await makeRequest({
+		executeFunctions,
+		method: 'GET',
+		path,
+		...requestParams,
+	})) as ApplicantReview;
 }
 
-async function updateApplicant(
-	executeFunctions: IExecuteFunctions,
-	itemIndex: number,
-	apiUrl: string,
-	appToken: string,
-	appSecret: string,
-): Promise<ApplicantData> {
+async function updateApplicant(params: ApplicantOperationParams): Promise<ApplicantData> {
+	const { executeFunctions, itemIndex, ...requestParams } = params;
 	const applicantId = executeFunctions.getNodeParameter('applicantId', itemIndex) as string;
 	const updateFields = executeFunctions.getNodeParameter(
 		'updateFields',
@@ -333,13 +365,12 @@ async function updateApplicant(
 	if (updateFields.firstName) body.firstName = updateFields.firstName;
 	if (updateFields.lastName) body.lastName = updateFields.lastName;
 
-	const url = `${apiUrl}/resources/applicants/${applicantId}/info`;
-	return (await makeRequest(
+	const path = `/resources/applicants/${applicantId}/info`;
+	return (await makeRequest({
 		executeFunctions,
-		'PATCH',
-		url,
-		appToken,
-		appSecret,
+		method: 'PATCH',
+		path,
 		body,
-	)) as ApplicantData;
+		...requestParams,
+	})) as ApplicantData;
 }
