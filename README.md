@@ -1,46 +1,90 @@
 ![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
 
-# n8n-nodes-starter
+# n8n-nodes-sumsub
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+This is an **unofficial** n8n community node that provides integration with the Sumsub identity verification API. This node allows you to automate identity verification workflows by connecting n8n to Sumsub's KYC/AML platform.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[Sumsub](https://sumsub.com/) is a comprehensive identity verification platform that helps businesses verify their users' identities and comply with KYC/AML regulations.
 
-## Prerequisites
+## ⚠️ Disclaimer
 
-You need the following installed on your development machine:
+**This project is not affiliated with, endorsed by, or sponsored by Sumsub.** This is an independent community-developed integration. Use this project at your own risk. The author is not responsible for any issues, data loss, or problems that may arise from using this node.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and pnpm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## What This Node Does
 
-## Using this starter
+This n8n node enables you to:
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+- **Automate applicant creation** in Sumsub from your n8n workflows
+- **Check verification status** of applicants programmatically
+- **Retrieve applicant data** for further processing in your workflows
+- **Update applicant information** when needed
+- **Integrate identity verification** into larger automation workflows
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm lint` to check for errors or `npm lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+The node handles all the complex authentication (HMAC-SHA256 signatures) required by the Sumsub API, making it easy to integrate identity verification into your n8n automations.
 
-## More information
+## Installation
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+
+## Operations
+
+### Applicant Resource
+
+- **Create**: Create a new applicant in Sumsub with external user ID, verification level, and optional personal information
+- **Get**: Retrieve complete applicant information including verification status and documents
+- **Get Status**: Get current verification status of an applicant (pending, approved, rejected, etc.)
+- **Update**: Update applicant information such as email, phone, or personal details
+
+## Credentials
+
+To use this node, you need to configure the following credentials in n8n:
+
+- **App Token**: Your Sumsub application token
+- **App Secret**: Your Sumsub application secret key
+- **API URL**: The Sumsub API base URL (default: https://api.sumsub.com)
+
+You can obtain the App Token and App Secret from your Sumsub dashboard under the API settings.
+
+## Authentication
+
+This node automatically handles Sumsub's required HMAC-SHA256 signature authentication. Each request is signed with your app secret using the proper timestamp and request data, ensuring secure communication with the Sumsub API.
+
+## Example Workflows
+
+### Automated User Onboarding
+
+1. **Trigger**: New user registration webhook
+2. **Sumsub Node**: Create applicant with user's email and external ID
+3. **Conditional Logic**: Check if applicant was created successfully
+4. **Email Node**: Send verification link to user
+5. **Wait Node**: Wait for verification completion
+6. **Sumsub Node**: Check verification status
+7. **Database Node**: Update user status based on verification result
+
+### Verification Status Monitoring
+
+1. **Schedule Trigger**: Run every hour
+2. **Database Node**: Get list of pending applicants
+3. **Sumsub Node**: Check status for each applicant
+4. **Switch Node**: Route based on verification status
+5. **Email/Slack Node**: Notify team of status changes
+
+## API Reference
+
+For more information about the Sumsub API endpoints and data structures, visit the [official Sumsub API documentation](https://developers.sumsub.com/api-reference/).
+
+## Support
+
+This is a community project. For issues related to:
+
+- **This n8n node**: Please open an issue on this repository
+- **Sumsub API**: Consult the official Sumsub documentation or support
+- **n8n platform**: Visit the n8n community forum
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[MIT](LICENSE.md)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.

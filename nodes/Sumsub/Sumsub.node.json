@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-base.sumsub",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Identity Verification"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://developers.sumsub.com/api-reference/#getting-started"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://developers.sumsub.com/api-reference/"
+			}
+		]
+	}
+}
