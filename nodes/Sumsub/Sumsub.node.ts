@@ -273,7 +273,6 @@ async function makeRequest(params: MakeRequestParams): Promise<SumsubApiResponse
 			'X-App-Token': appToken,
 			'X-App-Access-Sig': signature,
 			'X-App-Access-Ts': timestamp.toString(),
-			'Content-Type': 'application/json',
 		},
 		json: true,
 	};
