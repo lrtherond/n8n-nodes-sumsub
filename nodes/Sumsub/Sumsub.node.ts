@@ -270,6 +270,7 @@ async function makeRequest(params: MakeRequestParams): Promise<SumsubApiResponse
 		url: path,
 		baseURL: apiUrl,
 		headers: {
+			'Content-Type': 'application/json',
 			'X-App-Token': appToken,
 			'X-App-Access-Sig': signature,
 			'X-App-Access-Ts': timestamp.toString(),
