@@ -2,7 +2,7 @@
 
 # n8n-nodes-sumsub
 
-This is a **fork** of the original [n8n-nodes-sumsub](https://github.com/nkt/n8n-nodes-sumsub) project by [@nkt](https://github.com/nkt). This **unofficial** n8n community node provides integration with the Sumsub identity verification API, allowing you to automate identity verification workflows by connecting n8n to Sumsub's KYC/AML platform.
+This is an **unofficial** n8n community node that provides integration with the Sumsub identity verification API. This node allows you to automate identity verification workflows by connecting n8n to Sumsub's KYC/AML platform.
 
 [Sumsub](https://sumsub.com/) is a comprehensive identity verification platform that helps businesses verify their users' identities and comply with KYC/AML regulations.
 

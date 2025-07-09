@@ -10,14 +10,14 @@
 		"aml"
 	],
 	"license": "MIT",
-	"homepage": "https://github.com/nkt/n8n-nodes-sumsub",
+	"homepage": "https://github.com/lrtherond/n8n-nodes-sumsub",
 	"author": {
-		"name": "Nikita Gusakov",
-		"email": "gusnkt@gmail.com"
+		"name": "Laurent Therond",
+		"email": "lrtherond@gmail.com"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/nkt/n8n-nodes-sumsub.git"
+		"url": "https://github.com/lrtherond/n8n-nodes-sumsub.git"
 	},
 	"engines": {
 		"node": ">=20.15"
@@ -34,6 +34,9 @@
 	"files": [
 		"dist"
 	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"n8n": {
 		"n8nNodesApiVersion": 1,
 		"credentials": [
