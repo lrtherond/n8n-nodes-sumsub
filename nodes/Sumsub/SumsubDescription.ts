@@ -46,7 +46,7 @@ export const sumsubOperations: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['sdkIntegrations'],
+				resource: ['sdkIntegration'],
 			},
 		},
 		options: [
@@ -199,7 +199,7 @@ export const sumsubFields: INodeProperties[] = [
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['sdkIntegrations'],
+				resource: ['sdkIntegration'],
 				operation: ['generateWebsdkLink'],
 			},
 		},
@@ -213,7 +213,7 @@ export const sumsubFields: INodeProperties[] = [
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['sdkIntegrations'],
+				resource: ['sdkIntegration'],
 				operation: ['generateWebsdkLink'],
 			},
 		},
@@ -227,7 +227,7 @@ export const sumsubFields: INodeProperties[] = [
 		placeholder: 'Add Field',
 		displayOptions: {
 			show: {
-				resource: ['sdkIntegrations'],
+				resource: ['sdkIntegration'],
 				operation: ['generateWebsdkLink'],
 			},
 		},
