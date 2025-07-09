@@ -48,6 +48,21 @@ interface UpdateApplicantBody extends IDataObject {
 	lastName?: string;
 }
 
+interface GenerateWebsdkLinkBody extends IDataObject {
+	levelName: string;
+	userId: string;
+	applicantIdentifiers?: {
+		email?: string;
+		phone?: string;
+	};
+	ttlInSecs?: number;
+	externalActionId?: string;
+}
+
+interface WebsdkLinkResponse extends IDataObject {
+	url: string;
+}
+
 interface ReviewResult extends IDataObject {
 	reviewAnswer: 'GREEN' | 'RED';
 	rejectLabels?: string[];
@@ -108,7 +123,7 @@ interface ApplicantData extends IDataObject {
 	review?: ApplicantReview;
 }
 
-type SumsubApiResponse = ApplicantData | ApplicantReview | IDataObject;
+type SumsubApiResponse = ApplicantData | ApplicantReview | WebsdkLinkResponse | IDataObject;
 
 export class Sumsub implements INodeType {
 	description: INodeTypeDescription = {
@@ -190,6 +205,14 @@ export class Sumsub implements INodeType {
 						});
 					} else if (operation === 'update') {
 						responseData = await updateApplicant({
+							executeFunctions: this,
+							itemIndex: i,
+							apiUrl,
+							appToken,
+							appSecret,
+						});
+					} else if (operation === 'generateWebsdkLink') {
+						responseData = await generateWebsdkLink({
 							executeFunctions: this,
 							itemIndex: i,
 							apiUrl,
@@ -373,4 +396,45 @@ async function updateApplicant(params: ApplicantOperationParams): Promise<Applic
 		body,
 		...requestParams,
 	})) as ApplicantData;
+}
+
+async function generateWebsdkLink(params: ApplicantOperationParams): Promise<WebsdkLinkResponse> {
+	const { executeFunctions, itemIndex, ...requestParams } = params;
+	const levelName = executeFunctions.getNodeParameter('levelName', itemIndex) as string;
+	const userId = executeFunctions.getNodeParameter('userId', itemIndex) as string;
+	const additionalFields = executeFunctions.getNodeParameter(
+		'additionalFields',
+		itemIndex,
+		{},
+	) as {
+		email?: string;
+		phone?: string;
+		ttlInSecs?: number;
+		externalActionId?: string;
+	};
+
+	const body: GenerateWebsdkLinkBody = {
+		levelName,
+		userId,
+	};
+
+	// Add applicant identifiers if email or phone are provided
+	if (additionalFields.email || additionalFields.phone) {
+		body.applicantIdentifiers = {};
+		if (additionalFields.email) body.applicantIdentifiers.email = additionalFields.email;
+		if (additionalFields.phone) body.applicantIdentifiers.phone = additionalFields.phone;
+	}
+
+	// Add optional fields
+	if (additionalFields.ttlInSecs) body.ttlInSecs = additionalFields.ttlInSecs;
+	if (additionalFields.externalActionId) body.externalActionId = additionalFields.externalActionId;
+
+	const path = `/resources/sdkIntegrations/levels/-/websdkLink`;
+	return (await makeRequest({
+		executeFunctions,
+		method: 'POST',
+		path,
+		body,
+		...requestParams,
+	})) as WebsdkLinkResponse;
 }

@@ -19,6 +19,12 @@ export const sumsubOperations: INodeProperties[] = [
 				action: 'Create an applicant',
 			},
 			{
+				name: 'Generate WebSDK Link',
+				value: 'generateWebsdkLink',
+				description: 'Generate an external WebSDK link for applicant verification',
+				action: 'Generate web sdk link',
+			},
+			{
 				name: 'Get',
 				value: 'get',
 				description: 'Get applicant information',
@@ -174,6 +180,80 @@ export const sumsubFields: INodeProperties[] = [
 				type: 'string',
 				default: '',
 				description: 'Applicant last name',
+			},
+		],
+	},
+
+	// Generate WebSDK Link fields
+	{
+		displayName: 'Level Name',
+		name: 'levelName',
+		type: 'string',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['applicant'],
+				operation: ['generateWebsdkLink'],
+			},
+		},
+		default: '',
+		description: 'Verification level name',
+	},
+	{
+		displayName: 'User ID',
+		name: 'userId',
+		type: 'string',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: ['applicant'],
+				operation: ['generateWebsdkLink'],
+			},
+		},
+		default: '',
+		description: 'External user identifier',
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		displayOptions: {
+			show: {
+				resource: ['applicant'],
+				operation: ['generateWebsdkLink'],
+			},
+		},
+		default: {},
+		options: [
+			{
+				displayName: 'Email',
+				name: 'email',
+				type: 'string',
+				default: '',
+				placeholder: 'name@email.com',
+				description: 'Applicant email address',
+			},
+			{
+				displayName: 'Phone',
+				name: 'phone',
+				type: 'string',
+				default: '',
+				description: 'Applicant phone number',
+			},
+			{
+				displayName: 'TTL In Seconds',
+				name: 'ttlInSecs',
+				type: 'number',
+				default: 1800,
+				description: 'Time-to-live for the link in seconds (e.g., 1800 or 3600)',
+			},
+			{
+				displayName: 'External Action ID',
+				name: 'externalActionId',
+				type: 'string',
+				default: '',
+				description: 'Specific action identifier',
 			},
 		],
 	},
