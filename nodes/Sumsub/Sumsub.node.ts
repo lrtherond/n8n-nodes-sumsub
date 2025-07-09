@@ -153,8 +153,8 @@ export class Sumsub implements INodeType {
 						value: 'applicant',
 					},
 					{
-						name: 'SDK Integrations',
-						value: 'sdkIntegrations',
+						name: 'SDK Integration',
+						value: 'sdkIntegration',
 					},
 				],
 				default: 'applicant',
@@ -217,7 +217,7 @@ export class Sumsub implements INodeType {
 							`The operation "${operation}" is not known!`,
 						);
 					}
-				} else if (resource === 'sdkIntegrations') {
+				} else if (resource === 'sdkIntegration') {
 					if (operation === 'generateWebsdkLink') {
 						responseData = await generateWebsdkLink({
 							executeFunctions: this,
