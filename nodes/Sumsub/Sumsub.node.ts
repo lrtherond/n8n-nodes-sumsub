@@ -11,7 +11,6 @@ import {
 import { createHmac } from 'crypto';
 import { sumsubFields, sumsubOperations } from './SumsubDescription';
 
-// sumsub API types based on official documentation
 interface SumsubCredentials {
 	appToken: string;
 	appSecret: string;
@@ -80,7 +79,6 @@ interface ApplicantReview extends IDataObject {
 	reviewDate?: string;
 	reviewResult?: ReviewResult;
 	reviewStatus: 'init' | 'pending' | 'prechecked' | 'queued' | 'completed' | 'onHold';
-	priority?: number;
 }
 
 interface ApplicantInfo extends IDataObject {
@@ -390,7 +388,6 @@ async function updateApplicant(params: ApplicantOperationParams): Promise<Applic
 
 	const body: UpdateApplicantBody = {};
 
-	// add update fields to the body
 	if (updateFields.email) body.email = updateFields.email;
 	if (updateFields.phone) body.phone = updateFields.phone;
 	if (updateFields.firstName) body.firstName = updateFields.firstName;
@@ -422,14 +419,12 @@ async function generateWebsdkLink(params: ApplicantOperationParams): Promise<Web
 		userId,
 	};
 
-	// Add applicant identifiers if email or phone are provided
 	if (additionalFields.email || additionalFields.phone) {
 		body.applicantIdentifiers = {};
 		if (additionalFields.email) body.applicantIdentifiers.email = additionalFields.email;
 		if (additionalFields.phone) body.applicantIdentifiers.phone = additionalFields.phone;
 	}
 
-	// Add optional fields
 	if (additionalFields.ttlInSecs) body.ttlInSecs = additionalFields.ttlInSecs;
 	if (additionalFields.externalActionId) body.externalActionId = additionalFields.externalActionId;
 

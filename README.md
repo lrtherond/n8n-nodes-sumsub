@@ -1,26 +1,25 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
-
 # n8n-nodes-sumsub
 
 This is an **unofficial** n8n community node that provides integration with the Sumsub identity verification API. This node allows you to automate identity verification workflows by connecting n8n to Sumsub's KYC/AML platform.
 
 [Sumsub](https://sumsub.com/) is a comprehensive identity verification platform that helps businesses verify their users' identities and comply with KYC/AML regulations.
 
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
+
 ## ⚠️ Disclaimer
 
 **This project is not affiliated with, endorsed by, or sponsored by Sumsub.** This is an independent community-developed integration. Use this project at your own risk. The author is not responsible for any issues, data loss, or problems that may arise from using this node.
 
-## What This Node Does
+## ⚠️ Fork Notice
 
-This n8n node enables you to:
+This is a fork of [https://github.com/nkt/n8n-nodes-sumsub](https://github.com/nkt/n8n-nodes-sumsub) and is **not backward compatible** with the original repository. The API structure and operations have been reorganized and enhanced.
 
-- **Automate applicant creation** in Sumsub from your n8n workflows
-- **Check verification status** of applicants programmatically
-- **Retrieve applicant data** for further processing in your workflows
-- **Update applicant information** when needed
-- **Integrate identity verification** into larger automation workflows
-
-The node handles all the complex authentication (HMAC-SHA256 signatures) required by the Sumsub API, making it easy to integrate identity verification into your n8n automations.
+[Installation](#installation)
+[Operations](#operations)
+[Credentials](#credentials)
+[Compatibility](#compatibility)
+[Usage](#usage)
+[Resources](#resources)
 
 ## Installation
 
@@ -28,12 +27,18 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
+This node provides two main resources:
+
 ### Applicant Resource
 
-- **Create**: Create a new applicant in Sumsub with external user ID, verification level, and optional personal information
+- **Create**: Create a new applicant in Sumsub with external user ID, verification level, and optional information (email, phone, sourceKey)
 - **Get**: Retrieve complete applicant information including verification status and documents
 - **Get Status**: Get current verification status of an applicant (pending, approved, rejected, etc.)
-- **Update**: Update applicant information such as email, phone, or personal details
+- **Update**: Update applicant information such as email, phone, firstName, or lastName
+
+### SDK Integrations Resource
+
+- **Generate WebSDK Link**: Generate an external WebSDK link for applicant verification with customizable TTL and identifiers
 
 ## Credentials
 
@@ -41,17 +46,25 @@ To use this node, you need to configure the following credentials in n8n:
 
 - **App Token**: Your Sumsub application token
 - **App Secret**: Your Sumsub application secret key
-- **API URL**: The Sumsub API base URL (default: https://api.sumsub.com)
+- **API URL**: The Sumsub API base URL (default: <https://api.sumsub.com>)
 
 You can obtain the App Token and App Secret from your Sumsub dashboard under the API settings.
 
-## Authentication
+### Authentication
 
 This node automatically handles Sumsub's required HMAC-SHA256 signature authentication. Each request is signed with your app secret using the proper timestamp and request data, ensuring secure communication with the Sumsub API.
 
-## Example Workflows
+## Compatibility
 
-### Automated User Onboarding
+- **Minimum n8n version**: Compatible with n8n community nodes
+- **Node.js version**: Requires Node.js >=20.15
+- **n8n API version**: Uses n8n-workflow API version 1
+
+## Usage
+
+### Example Workflows
+
+#### Automated User Onboarding
 
 1. **Trigger**: New user registration webhook
 2. **Sumsub Node**: Create applicant with user's email and external ID
@@ -61,7 +74,7 @@ This node automatically handles Sumsub's required HMAC-SHA256 signature authenti
 6. **Sumsub Node**: Check verification status
 7. **Database Node**: Update user status based on verification result
 
-### Verification Status Monitoring
+#### Verification Status Monitoring
 
 1. **Schedule Trigger**: Run every hour
 2. **Database Node**: Get list of pending applicants
@@ -69,22 +82,31 @@ This node automatically handles Sumsub's required HMAC-SHA256 signature authenti
 4. **Switch Node**: Route based on verification status
 5. **Email/Slack Node**: Notify team of status changes
 
-## API Reference
+#### WebSDK Link Generation
 
-For more information about the Sumsub API endpoints and data structures, visit the [official Sumsub API documentation](https://developers.sumsub.com/api-reference/).
+1. **HTTP Request Trigger**: User requests verification link
+2. **Sumsub Node**: Generate WebSDK link with user ID and level
+3. **Return Response**: Send link back to user for verification
 
-## Support
+### Key Features
 
-This is a community project. For issues related to:
+- **Comprehensive API Coverage**: Supports all major Sumsub applicant operations
+- **Secure Authentication**: Built-in HMAC-SHA256 signature handling
+- **Type Safety**: Full TypeScript implementation with proper interfaces
+- **Error Handling**: Robust error handling with detailed error messages
+- **Flexible Configuration**: Optional parameters for customized workflows
 
-- **This n8n node**: Please open an issue on this repository
-- **Sumsub API**: Consult the official Sumsub documentation or support
-- **n8n platform**: Visit the n8n community forum
+## Resources
 
-## License
-
-[MIT](LICENSE.md)
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [Sumsub API Documentation](https://developers.sumsub.com/api-reference/)
+- [Sumsub Official Website](https://sumsub.com/)
+- [n8n Official Website](https://n8n.io/)
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[MIT](LICENSE.md)
