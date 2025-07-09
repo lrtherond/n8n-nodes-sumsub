@@ -156,6 +156,10 @@ export class Sumsub implements INodeType {
 						name: 'Applicant',
 						value: 'applicant',
 					},
+					{
+						name: 'SDK Integrations',
+						value: 'sdkIntegrations',
+					},
 				],
 				default: 'applicant',
 			},
@@ -211,7 +215,14 @@ export class Sumsub implements INodeType {
 							appToken,
 							appSecret,
 						});
-					} else if (operation === 'generateWebsdkLink') {
+					} else {
+						throw new NodeOperationError(
+							this.getNode(),
+							`The operation "${operation}" is not known!`,
+						);
+					}
+				} else if (resource === 'sdkIntegrations') {
+					if (operation === 'generateWebsdkLink') {
 						responseData = await generateWebsdkLink({
 							executeFunctions: this,
 							itemIndex: i,
@@ -331,7 +342,7 @@ async function createApplicant(params: ApplicantOperationParams): Promise<Applic
 		levelName,
 	};
 
-	// add additional fields to the body
+	// Add additional fields to the body
 	if (additionalFields.email) body.email = additionalFields.email;
 	if (additionalFields.phone) body.phone = additionalFields.phone;
 	if (additionalFields.firstName) body.firstName = additionalFields.firstName;
@@ -402,11 +413,7 @@ async function generateWebsdkLink(params: ApplicantOperationParams): Promise<Web
 	const { executeFunctions, itemIndex, ...requestParams } = params;
 	const levelName = executeFunctions.getNodeParameter('levelName', itemIndex) as string;
 	const userId = executeFunctions.getNodeParameter('userId', itemIndex) as string;
-	const additionalFields = executeFunctions.getNodeParameter(
-		'additionalFields',
-		itemIndex,
-		{},
-	) as {
+	const additionalFields = executeFunctions.getNodeParameter('additionalFields', itemIndex, {}) as {
 		email?: string;
 		phone?: string;
 		ttlInSecs?: number;

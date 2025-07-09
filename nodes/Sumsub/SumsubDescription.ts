@@ -19,12 +19,6 @@ export const sumsubOperations: INodeProperties[] = [
 				action: 'Create an applicant',
 			},
 			{
-				name: 'Generate WebSDK Link',
-				value: 'generateWebsdkLink',
-				description: 'Generate an external WebSDK link for applicant verification',
-				action: 'Generate web sdk link',
-			},
-			{
 				name: 'Get',
 				value: 'get',
 				description: 'Get applicant information',
@@ -44,6 +38,26 @@ export const sumsubOperations: INodeProperties[] = [
 			},
 		],
 		default: 'get',
+	},
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: {
+			show: {
+				resource: ['sdkIntegrations'],
+			},
+		},
+		options: [
+			{
+				name: 'Generate WebSDK Link',
+				value: 'generateWebsdkLink',
+				description: 'Generate an external WebSDK link for applicant verification',
+				action: 'Generate web sdk link',
+			},
+		],
+		default: 'generateWebsdkLink',
 	},
 ];
 
@@ -192,7 +206,7 @@ export const sumsubFields: INodeProperties[] = [
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['applicant'],
+				resource: ['sdkIntegrations'],
 				operation: ['generateWebsdkLink'],
 			},
 		},
@@ -206,7 +220,7 @@ export const sumsubFields: INodeProperties[] = [
 		required: true,
 		displayOptions: {
 			show: {
-				resource: ['applicant'],
+				resource: ['sdkIntegrations'],
 				operation: ['generateWebsdkLink'],
 			},
 		},
@@ -220,7 +234,7 @@ export const sumsubFields: INodeProperties[] = [
 		placeholder: 'Add Field',
 		displayOptions: {
 			show: {
-				resource: ['applicant'],
+				resource: ['sdkIntegrations'],
 				operation: ['generateWebsdkLink'],
 			},
 		},
