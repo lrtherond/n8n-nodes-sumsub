@@ -21,8 +21,7 @@ interface SumsubCredentials {
 interface ApplicantAdditionalFields {
 	email?: string;
 	phone?: string;
-	firstName?: string;
-	lastName?: string;
+	sourceKey?: string;
 }
 
 interface ApplicantUpdateFields {
@@ -37,8 +36,7 @@ interface CreateApplicantBody extends IDataObject {
 	levelName: string;
 	email?: string;
 	phone?: string;
-	firstName?: string;
-	lastName?: string;
+	sourceKey?: string;
 }
 
 interface UpdateApplicantBody extends IDataObject {
@@ -345,8 +343,7 @@ async function createApplicant(params: ApplicantOperationParams): Promise<Applic
 	// Add additional fields to the body
 	if (additionalFields.email) body.email = additionalFields.email;
 	if (additionalFields.phone) body.phone = additionalFields.phone;
-	if (additionalFields.firstName) body.firstName = additionalFields.firstName;
-	if (additionalFields.lastName) body.lastName = additionalFields.lastName;
+	if (additionalFields.sourceKey) body.sourceKey = additionalFields.sourceKey;
 
 	const path = `/resources/applicants?levelName=${encodeURIComponent(levelName)}`;
 	return (await makeRequest({
